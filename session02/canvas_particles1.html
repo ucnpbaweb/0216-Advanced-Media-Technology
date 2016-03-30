@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<script>
+			var canvas, ctx, interval, particles = [];
+			
+			var Particle = function(){
+				this.speed = {};
+				this.speed.x = Math.random()*4-2;
+				this.speed.y = Math.random()*4-2;
+				this.x = canvas.width/2;
+				this.y = 150;
+				this.radius = 4;
+			};
+			
+			Particle.prototype.render = function(){
+				this.x += this.speed.x;
+				this.y += this.speed.y;
+				ctx.fillRect(this.x, this.y, 5, 5);
+				/*ctx.fillStyle = 'black';
+				ctx.beginPath();
+				ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2, false);
+				ctx.fill();*/
+			};
+
+			var addParticle = function(){
+				particles.push(new Particle);
+			};
+
+			var update = function(){
+				addParticle();
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				
+				for (var i = 0; i < particles.length; i++) {
+					particles[i].render();
+				}
+				if(particles.length > 400){
+					particles = particles.slice(1);
+				}
+			};
+
+			window.addEventListener('load', function() {
+				canvas = document.getElementById("canvas");
+
+				if (canvas.getContext) {
+					ctx = canvas.getContext("2d");
+					interval =  setInterval(update, 50);
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+		<canvas id="canvas" width="300" height="300"></canvas>
+	</body>
+</html>

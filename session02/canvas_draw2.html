@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Draw 2</title>
+		<style>
+			body {
+				width: 400px;
+				margin: 0 auto;
+				overflow: hidden;
+			}
+			
+			#canvas {
+				border: solid 1px black;
+				position: relative;
+			}
+		</style>
+		<script>    
+			var canvas, ctx, ball, fps = 24;
+			var mouse = {down:false,count:0};
+			
+			var Ball = function(){
+				this.lineWidth = 5;
+				this.left;
+				this.top;
+			};
+
+			Ball.prototype.render = function(){
+				ctx.lineWidth = this.lineWidth;
+				ctx.strokeStyle = 'darkorange';
+				ctx.lineCap = 'round';
+				ctx.lineTo(this.left, this.top);
+				ctx.stroke();
+			};
+			
+			var load = function(){
+				canvas = document.getElementById('canvas');  
+				if (canvas.getContext) {  
+					ctx = canvas.getContext('2d');
+					ball = new Ball();
+					canvas.addEventListener('mousemove', mousemove, false);
+
+					canvas.addEventListener('mousedown', function(){
+						mouse.down = true;
+						ctx.beginPath();
+					}, false);
+					canvas.addEventListener('mouseup', function(){
+						mouse.down = false;
+						saveImg();
+					}, false);
+
+					if(localStorage.getItem('img')){
+						var img = new Image();
+						img.addEventListener('load', function(e){
+							ctx.drawImage(img, 0, 0);
+						}, false);
+						img.src = localStorage.getItem('img');
+					}
+					document.getElementById('btnclear').addEventListener('click', function(){
+						localStorage.clear();
+						ctx.clearRect(0, 0, canvas.width, canvas.height);
+					}, false);
+				}
+
+			};
+			
+			var mousemove = function(e){
+				mouse.left = e.clientX-canvas.offsetLeft;
+				mouse.top = e.clientY-canvas.offsetTop;
+				if(mouse.down){
+					if(mouse.count > 0){
+						ball.left = mouse.left;
+						ball.top = mouse.top;
+						ball.render();
+					}
+					mouse.count = mouse.count > 0 ? -5 : mouse.count+1;
+				}
+			};
+			
+			var saveImg = function(){
+				localStorage.setItem('img', canvas.toDataURL());
+			};
+			
+			window.addEventListener('load', load, false);
+		</script>  
+	</head>
+	<body>
+		<h1>Draw 2</h1>
+		<canvas id="canvas" width="400" height="400"></canvas>
+		<button id="btnclear">Clear</button>
+	</body>
+</html>

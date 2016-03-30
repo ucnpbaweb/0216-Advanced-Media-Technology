@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Particles</title>
+		<script>  
+			var timer, timer2, canvas, ctx;
+			var particles = [];
+			var drawTime = [0,0];
+			var global = {thrust:0.02, maxSpeed:2};
+			var Particle = function(x, y, r){
+				this.x = x;
+				this.y = y;
+				this.xSpeed = (Math.random()*global.maxSpeed*2-global.maxSpeed);
+				this.ySpeed = (Math.random()*global.maxSpeed*2-global.maxSpeed);
+				this.opacity = 1;
+				this.r = r;
+				this.red = Math.round(Math.random()*155+200);
+				this.green = Math.round(Math.random()*155+200);
+				this.blue = Math.round(Math.random()*155+200);
+				this.render = function(){
+					ctx.beginPath();
+					this.opacity -= 0.005;
+					this.r += 0.2;
+					if(this.r <= 0){
+						this.r = 0.1;
+					}
+					if(this.xSpeed > 0){
+						this.xSpeed -= global.thrust/2;
+						if(this.xSpeed < 0){
+							this.xSpeed = 0;
+						}
+					}
+					if(this.xSpeed < 0){
+						this.xSpeed += global.thrust/2;
+						if(this.xSpeed > 0){
+							this.xSpeed = 0;
+						}
+					}
+					ctx.fillStyle = 'rgba('+this.red+','+this.green+','+this.blue+','+this.opacity+')';
+					this.x += this.xSpeed;
+					if(this.ySpeed < global.maxSpeed){
+						this.ySpeed += global.thrust;
+					}
+					this.y += this.ySpeed;
+					
+					ctx.moveTo(this.x, this.y);
+					ctx.shadowOffsetX = 2;
+					ctx.shadowOffsetY = 2;
+					ctx.shadowBlur = 2;
+					ctx.shadowColor = "rgba(0, 0, 0, 0.5)"; 
+					ctx.arc(this.x, this.y, this.r, 0, Math.PI*2, false);
+					ctx.fill();
+				};
+			};
+			
+			var draw = function() {
+				ctx.save();
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				
+				if(particles[0] && particles[0].opacity <= 0){
+					particles = particles.slice(1);
+				}
+				for(var i = 0; i < particles.length; i++){
+					particles[i].render();
+				}
+				ctx.restore();
+				drawTime = drawTime.slice(1);
+				var d = new Date();
+				drawTime[1] = d.getTime();
+			};
+			
+			var updateStatus = function(){
+				document.getElementById('console').innerHTML = '';
+				document.getElementById('console').innerHTML += 'Particles: ' + particles.length;
+				document.getElementById('console').innerHTML += '\nTime: ' + Math.round(1000/(drawTime[1]-drawTime[0])) + ' fps';
+			};
+			
+			var mousemove = function(e){
+				particles[particles.length] = new Particle(e.clientX, e.clientY, Math.random()+5);
+			};
+
+			window.addEventListener('load', function(){
+				canvas = document.getElementById("canvas");  
+				if (canvas.getContext) { 
+					canvas.addEventListener('mousemove', mousemove, false);
+					ctx = canvas.getContext("2d");
+					ctx.fillStyle = 'black';
+					timer = window.setInterval(draw, 80);
+					timer = window.setInterval(updateStatus, 50);
+				}
+			}, false);
+		</script>  
+	</head>  
+	<body style="background-color: black">
+		<canvas id="canvas" width="400" height="400"></canvas>
+		<pre id="console" style="color:white"></pre>
+	</body>
+</html>

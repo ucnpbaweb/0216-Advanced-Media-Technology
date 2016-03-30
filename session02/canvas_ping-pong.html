@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Ping-Pong</title>
+		<style>
+			body {
+				width: 400px;
+				margin: 0 auto;
+				overflow: hidden;
+			}
+			#scoreboard{
+				text-align: center;
+			}
+			
+			#canvas {
+				border: solid 1px black;
+			}
+		</style>
+		<script>    
+			var scoreboard, canvas, ctx, ball, batLeft, batRight, fps = 24;
+			
+			function Ball(){
+				this.width = 10;
+				this.height = 10;
+				this.left = canvas.width/2;
+				this.top = canvas.height/2;
+				this.velocityLeft = 0;
+				this.velocityTop = 0;
+				this.out = true;
+				
+				this.render = function(){
+					this.left += this.velocityLeft;
+					this.top += this.velocityTop;
+					ctx.fillRect(this.left, this.top, this.width, this.height);
+				};
+				
+				this.rightEdge = function(){
+					return this.left+this.width;
+				};
+				
+				this.leftEdge = function(){
+					return this.left;
+				};
+				
+				this.bottomEdge = function(){
+					return this.top+this.height;
+				};
+				
+				this.centerTop = function(){
+					return this.top+this.height/2;
+				};
+			}
+			
+			function Bat(left, top, keyUp, keyDown){
+				var self = this;
+				this.width = 30;
+				this.height = 100;
+				this.top = top;
+				this.left = left;
+				this.score = 0;
+				window.addEventListener('keydown', function(e){
+					switch(e.keyCode){
+						case keyUp:
+							self.top -= 10;
+							if(self.top < 0){
+								self.top = 0;
+							}
+							break;
+						case keyDown:
+							self.top += 10;
+							if(self.top+self.height > canvas.height){
+								self.top = canvas.height-self.height;
+							}
+							break;
+					}
+				}, false);
+				
+				this.render = function(){
+					ctx.fillRect(this.left, this.top, this.width, this.height);
+				};
+				
+				this.rightEdge = function(){
+					return this.left+this.width;
+				};
+				
+				this.leftEdge = function(){
+					return this.left;
+				};
+				
+				this.bottomEdge = function(){
+					return this.top+this.height;
+				};
+				
+				this.centerTop = function(){
+					return this.top+this.height/2;
+				};
+			}
+			
+			var load = function(){
+				canvas = document.getElementById('canvas');  
+				scoreboard = document.getElementById('scoreboard');
+				if (canvas.getContext) {  
+					ctx = canvas.getContext('2d');
+					ball = new Ball();
+					window.addEventListener('keydown', function(e){
+						if(ball.out && e.keyCode == 32){
+							ball.out = false;
+							ball.velocityLeft = 5;
+						}
+					}, false);
+					
+					batLeft = new Bat(30, canvas.height/2-50, 65, 90);
+					batRight = new Bat(canvas.width-60, canvas.height/2-50, 75, 77);
+					updateScoreBoard();
+					setInterval(render, 1000/fps);
+				}
+			};
+			
+			var render = function(){
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				
+				if(ball.left > canvas.width || ball.left < 0){
+					if(ball.left < 0){
+						batRight.score += 1;
+					}
+					if(ball.left > canvas.width){
+						batLeft.score += 1;
+					}
+					//center ball
+					ball.left = canvas.width/2;
+					ball.top = canvas.height/2;
+					ball.velocityLeft = 0;
+					ball.velocityTop = 0;
+					updateScoreBoard();
+				}
+				
+				if(ball.bottomEdge() > canvas.height){
+					ball.velocityTop = ball.velocityTop/-1;
+				}
+				
+				if(ball.top < 0){
+					ball.velocityTop = ball.velocityTop/-1;
+				}
+				
+				if(ball.rightEdge()+5 > batRight.leftEdge()){
+					if(ball.centerTop() > batRight.top && ball.centerTop() < batRight.bottomEdge()){
+						if(!ball.out){
+							ball.velocityLeft = -5;
+							var newV = (ball.centerTop()-batRight.centerTop())/batRight.height;
+							ball.velocityTop += newV;
+						}
+					}else{
+						ball.out = true;
+					}
+				}
+				
+				if(ball.leftEdge()-5 < batLeft.rightEdge()){
+					if(ball.centerTop() > batLeft.top && ball.centerTop() < batLeft.bottomEdge()){
+						if(!ball.out){
+							ball.velocityLeft = 5;
+							var newV = (ball.centerTop()-batLeft.centerTop())/batLeft.height;
+							ball.velocityTop += newV;
+						}
+					}else{
+						ball.out = true;
+					}
+				}
+				batLeft.render();
+				batRight.render();
+				ball.render();
+			};
+			
+			var updateScoreBoard = function(){
+				scoreboard.innerHTML = batLeft.score + ' - ' + batRight.score;
+			};
+			
+			window.addEventListener('load', load, false);
+		</script>  
+	</head>
+	<body>
+		<h1>Ping-pong</h1>
+		<canvas id="canvas" width="400" height="400"></canvas> 
+		<div id="scoreboard"></div>
+		<p>Left: A/Z, Right: K/M, Start ball: space</p>
+	</body>
+</html>

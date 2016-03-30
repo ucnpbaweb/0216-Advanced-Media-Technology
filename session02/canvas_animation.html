@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Animation</title>
+		<style>
+			body {
+				width: 400px;
+				margin: 0 auto;
+				overflow: hidden;
+			}
+			
+			#canvas {
+				border: solid 1px black;
+				position: relative;
+			}
+		</style>
+		<script>    
+			var canvas, ctx, ball, fps = 24, lastdelta = 0, speed = 10; //speed = 10 px/sec
+			var mouse = {over:false};
+
+			var Ball = function(){
+				this.radius = 10;
+				this.left = canvas.width/2;
+				this.top = canvas.height/2;
+				this.velocityLeft = 0;
+				this.velocityTop = 0;
+			};
+
+			Ball.prototype.render = function(){
+				this.left += this.velocityLeft;
+				this.top += this.velocityTop;
+				ctx.fillStyle = 'red';
+				ctx.beginPath();
+				ctx.arc(this.left, this.top, this.radius, 0, Math.PI*2, false);
+				ctx.fill();
+			};
+
+			
+			var load = function(){
+				canvas = document.getElementById('canvas');  
+				if (canvas.getContext) {  
+					ctx = canvas.getContext('2d');
+					ball = new Ball();
+					
+					canvas.addEventListener('mousemove', mousemove, false);
+					canvas.addEventListener('mouseover', function(){mouse.over = true;}, false);
+					canvas.addEventListener('mouseout', function(){mouse.over = false;}, false);
+					
+					requestAnimationFrame(render);
+				}
+			};
+			
+			var render = function(delta){
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ball.render();
+				//var delta = Date.now();
+				var moveDist = (delta-lastdelta)/1000 * speed;
+				//console.debug(delta);
+				if(mouse.over){
+					ball.velocityLeft = ball.left > mouse.left ? ball.velocityLeft-moveDist : ball.velocityLeft+moveDist;
+					ball.velocityTop = ball.top > mouse.top ? ball.velocityTop-moveDist : ball.velocityTop+moveDist;
+				}else{
+					ball.velocityLeft = ball.velocityLeft*.9;
+					ball.velocityTop = ball.velocityTop*.9;
+				}
+				lastdelta = delta;
+				requestAnimationFrame(render);
+			};
+			
+			var mousemove = function(e){
+				mouse.left = e.clientX-canvas.offsetLeft;
+				mouse.top = e.clientY-canvas.offsetTop;
+			};
+			
+			window.addEventListener('load', load, false);
+		</script>  
+	</head>
+	<body>
+		<h1>Animation</h1>
+		<canvas id="canvas" width="400" height="400"></canvas> 
+	</body>
+</html>

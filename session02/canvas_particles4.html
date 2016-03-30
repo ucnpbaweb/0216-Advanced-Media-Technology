@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<script type="application/x-javascript">
+		var canvas, ctx, interval, particles = [];
+		var globals = {thrust: -0.005};
+		
+		var Particle = function(){
+			this.d = {x:(canvas.width/2),y:(canvas.height-10),w:5,h:5};
+			this.speed = {x:Math.random()*8-4,y:Math.random()*1};
+			this.opacity = 1;
+			this.color = 'rgba(255,255,255,'+this.opacity+')';
+		};
+
+		Particle.prototype.render = function(){
+			this.speed.y += globals.thrust;
+			this.opacity -= .005;
+			ctx.fillStyle = 'rgba(255,255,255,'+this.opacity+')';
+			this.speed.x = (Math.abs(this.speed.x) > 0.1) ? this.speed.x*.95 : Math.random()*6-3;
+			if(Math.abs(this.speed.x) > 0.1){
+				this.speed.x = this.speed.x*.95;
+			} else {
+				this.speed.x = Math.random()*6-3;
+				this.speed.y = Math.random();
+			}
+
+
+
+			this.d.x += this.speed.x;
+			this.d.y += this.speed.y;
+			if(this.d.y > canvas.height-5){
+				this.d.y = canvas.height-5;
+				this.speed.y = this.speed.y*-.7;
+			}
+			ctx.fillRect(this.d.x, this.d.y, this.d.w, this.d.h);
+		};
+
+		var addParticle = function(){
+			particles.push(new Particle());
+		};
+
+		var update = function(delta){
+			addParticle();
+			//ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.fillStyle = 'black';
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			for (var i = 0; i < particles.length; i++) {
+				particles[i].render();
+			}
+			if(particles.length > 400){
+				particles = particles.slice(1);
+			}
+			requestAnimationFrame(update);
+		};
+
+		window.addEventListener('load', function() {
+			canvas = document.getElementById("canvas");
+
+			if (canvas.getContext) {
+				ctx = canvas.getContext("2d");
+				//interval =  setInterval('update()', 50);
+				requestAnimationFrame(update);
+			}
+		}, false);
+		</script>
+	</head>
+	<body>
+		<canvas id="canvas" width="300" height="300"></canvas>
+	</body>
+</html>

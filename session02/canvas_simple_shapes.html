@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Simple shapes</title>
+		<style>
+			#canvas {
+				border: solid 1px black;
+			}
+		</style>
+		<script>  
+			var canvas, ctx, imgdata;
+
+			var loadToImg = function(){
+				imgdata.src = canvas.toDataURL();
+			};
+			
+			var paint = function(){  
+				//rect
+				ctx.fillStyle = 'navy';
+				ctx.fillRect(5, 5, 50, 50);
+				
+				//strokeRect
+				ctx.lineWidth = 4;
+				ctx.strokeStyle = 'orange';
+				ctx.strokeRect(60, 5, 50, 50);
+				
+				//path
+				ctx.strokeStyle = 'darkgreen';
+				ctx.lineCap = 'round';
+				ctx.beginPath();
+				ctx.moveTo(120,5);
+				ctx.lineTo(200, 50);
+				ctx.stroke();
+				
+				//quadraticCurveTo
+				ctx.strokeStyle = 'lightgreen';
+				ctx.lineCap = 'round';
+				ctx.beginPath();
+				ctx.moveTo(210,5);
+				ctx.quadraticCurveTo(250, 100, 290, 5);
+				ctx.stroke();
+				ctx.fillStyle = 'gray';
+				ctx.fill();
+				
+				//arc
+				ctx.moveTo(360,25);
+				ctx.arc(360,25, 20, 0, Math.PI*2, false);
+				ctx.stroke();
+				ctx.fill();
+			}
+			
+			window.addEventListener('load', function(){
+				canvas = document.getElementById('canvas');
+				imgdata = document.getElementById('imgdata');
+				document.getElementById('toDataURL').addEventListener('click', loadToImg, false);
+				
+				ctx = canvas.getContext('2d');
+
+				paint();
+			}, false);
+		</script>  
+	</head>  
+	<body> 
+		<canvas id="canvas" width="400" height="60"></canvas> 
+		<div><button id="toDataURL">toDataURL</button></div>
+		<div><img id="imgdata" src=""/></div>
+	</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Image</title>
+		<style>
+			#canvas {
+				border: solid 1px black;
+			}
+		</style>
+		<script>  
+			var canvas, ctx, img, mousepos;
+			
+			var loadimage = function(){  
+				img = new Image();
+				img.addEventListener('load', function(e){
+					draw();
+				}, false);
+				img.src = '5108.jpg';
+			}
+			
+			var draw = function(){
+				ctx.save();
+				ctx.translate(100, 5);
+				ctx.drawImage(img, 0, 0);
+				
+				var width = img.width;
+				var height = img.height;
+				var newWidth = 200;
+				var newHeight = 200/width*height;
+				ctx.translate(-50, 200);
+				ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+				ctx.translate(300, 0);
+				ctx.rotate(Math.PI*1/8);
+				ctx.drawImage(img, 0, 0, newWidth, newHeight);
+				ctx.restore();
+			};
+			
+			window.addEventListener('load', function(){
+				canvas = document.getElementById('canvas');
+				ctx = canvas.getContext('2d');
+
+				loadimage();
+			}, false);
+		</script>  
+	</head>  
+	<body>  
+		<canvas id="canvas" width="600" height="400"></canvas>
+		<p id="mousepos"></p>
+	</body>
+</html>

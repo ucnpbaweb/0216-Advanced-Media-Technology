@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Draw</title>
+		<style>
+			body {
+				width: 400px;
+				margin: 0 auto;
+				overflow: hidden;
+			}
+			
+			#canvas {
+				border: solid 1px black;
+				position: relative;
+			}
+		</style>
+		<script>    
+			var canvas, ctx, ball, fps = 24;
+			var mouse = {down:false};
+			
+			var Ball = function(){
+				this.lineWidth = 5;
+				this.left;
+				this.top;
+			};
+
+			Ball.prototype.render = function(){
+				ctx.lineWidth = this.lineWidth;
+				ctx.strokeStyle = 'darkorange';
+				ctx.lineCap = 'round';
+				ctx.lineTo(this.left, this.top);
+				ctx.stroke();
+			};
+			
+			var load = function(){
+				canvas = document.getElementById('canvas');  
+				if (canvas.getContext) {  
+					ctx = canvas.getContext('2d');
+					ball = new Ball();
+					canvas.addEventListener('mousemove', mousemove, false);
+					canvas.addEventListener('mousedown', function(){mouse.down = true;ctx.beginPath();}, false);
+					canvas.addEventListener('mouseup', function(){mouse.down = false;}, false);
+				}
+			};
+			
+			var mousemove = function(e){
+				mouse.left = e.clientX-canvas.offsetLeft;
+				mouse.top = e.clientY-canvas.offsetTop;
+				if(mouse.down){
+					ball.left = mouse.left;
+					ball.top = mouse.top;
+					ball.render();
+				}
+			};
+			
+			window.addEventListener('load', load, false);
+		</script>  
+	</head>
+	<body>
+		<h1>Draw</h1>
+		<canvas id="canvas" width="400" height="400"></canvas> 
+	</body>
+</html>

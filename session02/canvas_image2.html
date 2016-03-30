@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Image</title>
+		<style>
+			body {
+				position: absolute;
+			}
+			#canvas {
+				border: solid 1px black;
+				margin-left: 20px;
+				position: relative;
+				cursor: none;
+			}
+		</style>
+		<script>  
+			var canvas, ctx, img, mousepos;
+			
+			var load = function(){  
+				canvas = document.getElementById('canvas');
+				mousepos = document.getElementById('mousepos');
+
+				canvas.addEventListener('mousemove', mousemove, false);
+				
+				ctx = canvas.getContext('2d');
+				
+				img = new Image();
+				img.addEventListener('load', function(e){
+					draw();
+				}, false);
+				img.src = '5108.jpg';
+			}
+			
+			var draw = function(){
+				ctx.save();
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ctx.translate(100, 5);
+				ctx.drawImage(img, 0, 0);
+				
+				var width = img.width;
+				var height = img.height;
+				var newWidth = 200;
+				var newHeight = 200/width*height;
+				ctx.translate(-50, 200);
+				ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+				ctx.translate(300, 0);
+				ctx.rotate(Math.PI*1/8);
+				ctx.drawImage(img, 0, 0, newWidth, newHeight);
+				ctx.restore();
+			};
+			
+			var mousemove = function(e){
+				draw();
+				var canvasPos = canvas.getBoundingClientRect();
+				var mousePosX = e.clientX-canvasPos.left;
+				var mousePosY = e.clientY-canvasPos.top;
+
+				var newWidth = 100;
+				var newHeight = newWidth/img.width*img.height;
+				
+				ctx.drawImage(img, mousePosX-newWidth/2, mousePosY-newHeight/2, newWidth, newHeight);
+
+				mousepos.innerHTML = (e.clientX-canvasPos.left) + ', ' + (e.clientY-canvasPos.top);
+			};
+			
+			window.addEventListener('load', load, false);
+		</script>  
+	</head>  
+	<body>  
+		<canvas id="canvas" width="600" height="400"></canvas>
+		<p id="mousepos"></p>
+	</body>
+</html>

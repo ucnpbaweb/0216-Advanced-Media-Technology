@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<script type="application/x-javascript">
+			var canvas, ctx, interval, particles = [];
+			var globals = {thrust: 0.1};
+
+			var Particle = function(){
+				this.d = {x:(canvas.width/2),y:(canvas.height/3),w:5,h:5};
+				//this.keyCode = Math.round(65+Math.random()*(90-65)); //65-90
+				this.speed = {x:Math.random()*4-2,y:Math.random()*4-2};
+				this.color = 'rgb(' + Math.round(Math.random()*255) + ',' + Math.round(Math.random()*255) + ',' + Math.round(Math.random()*255) +')';
+			};
+
+			Particle.prototype.render = function(){
+				ctx.fillStyle = this.color;
+				this.speed.y += globals.thrust;
+				if (this.speed.x > 0) {
+					this.speed.x -= this.speed.x*1/1000;
+				} else{
+					this.speed.x += this.speed.x*1/1000;
+				}
+					this.d.x += this.speed.x;
+				this.d.y += this.speed.y;
+				if(this.d.y > canvas.height-5){
+					this.d.y = canvas.height-5;
+					this.speed.y = this.speed.y*-.7;
+				}
+				ctx.fillRect(this.d.x, this.d.y, this.d.w, this.d.h);
+				/*ctx.fillStyle = 'green';
+				ctx.font = '25px Verdana, sans-serif';
+				ctx.textBaseline = 'top';
+				ctx.textAlign = 'center';
+				ctx.fillText(String.fromCharCode(this.keyCode), this.d.x, this.d.y);*/
+			};
+
+			var addParticle = function(){
+				particles.push(new Particle);
+			};
+
+			var update = function(){
+				addParticle();
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				for (var i = 0; i < particles.length; i++) {
+					particles[i].render();
+				}
+				if(particles.length > 400){
+					particles = particles.slice(1);
+				}
+			};
+
+			window.addEventListener('load', function() {
+				canvas = document.getElementById("canvas");
+
+				if (canvas.getContext) {
+					ctx = canvas.getContext("2d");
+					interval = setInterval(update, 50);
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+		<canvas id="canvas" width="300" height="300"></canvas>
+	</body>
+</html>
