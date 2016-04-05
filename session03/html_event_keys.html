@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>HTML event keys</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				height: 100%;
+			}
+			#frame {
+				border: 1px solid black;
+				position: relative;
+				width: 200px;
+				height: 200px;
+				left: calc(50% - 100px);
+				top: calc(50% - 100px);
+			}
+
+			#moving {
+				position: absolute;
+				width: 20px;
+				height: 20px;
+				background-color: lightgreen;
+				text-align: center;
+			}
+		</style>
+		<script type="text/javascript">
+			var movingDiv;
+
+			var keyDown = function(e){
+				console.log(e);
+				switch(e.keyCode){
+					case 37:
+						movingDiv.style.left = (movingDiv.offsetLeft > 20) ? Number(movingDiv.offsetLeft - 20) + 'px' : '0px';
+						break;
+					case 38:
+						movingDiv.style.top = (movingDiv.offsetTop > 20) ? Number(movingDiv.offsetTop - 20) + 'px' : '0px';
+						break;
+					case 39:
+						movingDiv.style.left = (movingDiv.offsetLeft < 180) ? Number(movingDiv.offsetLeft + 20) + 'px' : '180px';
+						break;
+					case 40:
+						movingDiv.style.top = (movingDiv.offsetTop < 180) ? Number(movingDiv.offsetTop + 20) + 'px' : '180px';
+						break;
+				}
+			};
+
+			window.addEventListener('load', function(){
+				movingDiv = document.getElementById('moving');
+				document.addEventListener('keydown', keyDown, false);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<div id="frame">
+			<div id="moving">x</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cancas - movement</title>
+		<meta charset="utf-8"/>
+		<script type="text/javascript">
+			var canvas, ctx, discs = [], lastdelta = 0, starttime, timediff;
+			//velocity = px pr sec
+			var Disc = function(position, color){
+				this.color = color;
+				this.radius = 50;
+				this.position = {'x' : position.x, 'y' : position.y};
+				this.velocity = {'x' : 0, 'y' : 0};
+			};
+
+			Disc.prototype.setvelocity = function(x, y){
+				this.velocity.x += x;
+				this.velocity.y += y;
+			};
+
+			Disc.prototype.update = function(timediff){
+				/*
+					update position with the velocity as a share of a ms acording to the timediff
+					100px*20ms/1000ms = 100px*1/50 = 2px
+				*/
+				this.position.x += this.velocity.x*timediff/1000;
+				this.position.y += this.velocity.y*timediff/1000;
+
+				if(this.position.x + this.radius > canvas.width){
+					this.position.x = canvas.width-this.radius-(this.position.x + this.radius - canvas.width);
+					
+					this.velocity.x = this.velocity.x*-1;
+				}
+
+				if(this.position.x - this.radius < 0){
+					this.position.x = this.radius-(this.position.x - this.radius);
+					this.velocity.x = this.velocity.x * -1;
+				}
+
+				if(this.position.y + this.radius > canvas.height){
+					this.position.y = canvas.height - this.radius;
+					this.velocity.y = this.velocity.y * -1;
+				}
+
+				if(this.position.y-this.radius < 0){
+					this.position.y = this.radius;
+					this.velocity.y = this.velocity.y * -1;
+				}
+			};
+
+			Disc.prototype.render = function(sec){
+
+				ctx.fillStyle = this.color;
+				ctx.beginPath();
+				ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2, false);
+				ctx.fill();
+				ctx.fillStyle = 'black';
+				ctx.font = '40px Verdana, sans-serif';
+				ctx.textBaseline = 'middle';
+				ctx.textAlign = 'center';
+				ctx.fillText(sec, this.position.x, this.position.y);
+			};
+
+			var update = function(timediff){
+				discs.forEach(function(disc){
+					disc.update(timediff);
+				});
+			};
+
+			var render = function(sec){
+				ctx.clearRect(0, 50, canvas.width, canvas.height-50);
+				discs.forEach(function(disc){
+					disc.render(sec);
+				});
+			};
+
+			var animate = function(delta){
+				starttime = isNaN(starttime) ? delta : starttime;
+				//number of ms from last function call
+				var timediff = delta - lastdelta;
+				if(lastdelta){
+					//update the state of all objects
+					update(timediff);
+					var d = new Date(delta - starttime);
+					//redraw the canvas
+					render(d.getSeconds());
+				}
+				//overwrite lastdelta to the current one
+				lastdelta = delta;
+				
+				//call this function again
+				requestAnimationFrame(animate);
+			};
+
+			var drawtimeline = function(){
+				ctx.save();
+				//
+				//ctx.moveTo(10, 50);
+				for(var i = 0; i < 15; i++){
+					//text
+					ctx.fillStyle = 'black';
+					ctx.font = '12px Verdana, sans-serif';
+					ctx.textBaseline = 'top';
+					ctx.textAlign = 'center';
+					ctx.fillText(i*50, 50+i*50, 0);
+					ctx.fillStyle = 'green';
+					ctx.beginPath();
+					ctx.arc(50+i*50, 25, 10, 0, Math.PI*2, false);
+					ctx.fill();
+				}
+			};
+
+			window.addEventListener('load', function(){
+				canvas = document.getElementById('canvas');
+				ctx = canvas.getContext('2d');
+
+				var disc1 = new Disc({'x' : 50, 'y' : 100}, 'red');
+				disc1.velocity = {x : 100, y : 0};
+				discs.push(disc1);
+
+				drawtimeline();
+
+				requestAnimationFrame(animate);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<h1>Canvas - movement</h1>
+		<canvas id="canvas" width="800" height="200"></canvas>
+	</body>
+</html>

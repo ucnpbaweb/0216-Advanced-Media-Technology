@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Touch Tracker Marker</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+		<style type="text/css">
+			body { margin: 0px; overflow: hidden; }
+			canvas {
+				border: 1px solid black;
+			}
+		</style>
+		<script type="text/javascript">
+			var canvas, ctx;
+			var touches = [];
+
+			var render = function(){
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				for(var i = 0; i < touches.length; i++){
+					var touch = touches[i];
+					var px = touch.pageX;
+					var py = touch.pageY;
+
+					ctx.beginPath();
+					ctx.arc(px, py, 60, 0, 2*Math.PI, true);
+
+					ctx.fillStyle = "rgba(0, 0, 200, 0.2)";
+					ctx.fill();
+
+					ctx.lineWidth = 2.0;
+					ctx.strokeStyle = "rgba(0, 0, 200, 0.8)";
+					ctx.stroke();
+					console.log('drawn circle at ' + px +',' + py);
+				}
+			};
+
+			var animate = function(delta){
+				render();
+				requestAnimationFrame(animate);
+			};
+
+			window.addEventListener('load', function() {
+				canvas = document.getElementById('canvas');
+				ctx = canvas.getContext('2d');
+
+				canvas.addEventListener('touchend', function(e) {
+					//console.log(e);
+				});
+
+				canvas.addEventListener('touchmove', function(e) {
+					//console.log(e);
+					e.preventDefault();
+					touches = e.touches;
+				});
+
+				canvas.addEventListener('touchstart', function(e) {
+					//console.log(e);
+					touches = e.touches;
+				});
+
+				requestAnimationFrame(animate);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<canvas id="canvas" width="600" height="600"></canvas>
+	</body>
+</html>

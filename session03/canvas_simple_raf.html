@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Canvas - simple requestAnimationFrame</title>
+		<meta charset="utf-8"/>
+		<script type="text/javascript">
+			var canvas, ctx, lastdelta = 0, fps = 20, positionX = -10;
+
+			var update = function(timediff){
+				//100px in one sec
+				//100px * timediff / 1000
+				positionX += 100*timediff/1000;
+				//console.debug(100*timediff/1000);
+				if(positionX > canvas.width){
+					positionX = -10;
+				}
+			};
+
+			var render = function(){
+				//clear the entire canvas
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				// draw a circle with positionX
+				ctx.fillStyle = 'red';
+				ctx.beginPath();
+				ctx.arc(positionX, 10, 10, 0, Math.PI*2, false);
+				ctx.fill();
+			};
+
+			var animate = function(delta){
+				//number of ms from last function call
+				var timediff = delta - lastdelta;
+
+				//if lastdelta is different from 0, every time except the first
+				if(lastdelta){
+					//update the state
+					update(timediff);
+					//redraw the canvas
+					render();
+				}
+				//overwrite lastdelta to the current one
+				lastdelta = delta;
+				//call this function again after a number of ms
+				//requestAnimationFrame(animate);
+				setTimeout(function(){
+					requestAnimationFrame(animate);
+				}, 1000/fps);
+			};
+
+			window.addEventListener('load', function(){
+				canvas = document.getElementById('canvas');
+				ctx = canvas.getContext('2d');
+
+				requestAnimationFrame(animate);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<h1>Canvas - simple requestAnimationFrame</h1>
+		<canvas id="canvas" width="400" height="20"></canvas>
+	</body>
+</html>

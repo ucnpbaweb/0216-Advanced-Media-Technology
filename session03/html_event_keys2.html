@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title>HTML event keys</title>
+		<style type="text/css">
+			html, body {
+				margin: 0;
+				height: 100%;
+			}
+			#frame {
+				border: 1px solid black;
+				position: relative;
+				width: 200px;
+				height: 200px;
+				left: calc(50% - 100px);
+				top: calc(50% - 100px);
+			}
+
+			#moving {
+				position: absolute;
+				left: 20;
+				top: 0;
+				width: 20px;
+				height: 20px;
+				background-color: lightgreen;
+				text-align: center;
+			}
+		</style>
+		<script type="text/javascript">
+			var movingObj;
+
+			var Moving = function(div){
+				this.div = div;
+				this.left = 0;
+				this.top = 0;
+			};
+
+			Moving.prototype.move = function(keyCode){
+				switch(keyCode){
+					case 37:
+						this.left = (this.left > 20) ? this.left - 20 : 0;
+						break;
+					case 38:
+						this.top = (this.top > 20) ? this.top - 20 : 0;
+						break;
+					case 39:
+						this.left = (this.left < 180) ? this.left + 20 : 180;
+						break;
+					case 40:
+						this.top = (this.top < 180) ? this.top + 20 : 180;
+						break;
+				}
+				return this;
+			};
+
+			Moving.prototype.render = function(){
+				this.div.style.left = this.left + 'px';
+				this.div.style.top = this.top + 'px';
+			};
+
+			var keyDown = function(e){
+				if(e.keyCode > 36 && e.keyCode < 41){
+					movingObj.move(e.keyCode);
+					movingObj.render();
+				}
+			};
+
+			window.addEventListener('load', function(){
+				movingObj = new Moving(document.getElementById('moving'));
+				document.addEventListener('keydown', keyDown, false);
+				movingObj.render();
+			}, false);
+		</script>
+	</head>
+	<body>
+		<div id="frame">
+			<div id="moving">x</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Canvas - keyboard</title>
+		<meta charset="utf-8"/>
+		<script type="text/javascript">
+			var canvas, ctx;
+			var position = {};
+			
+
+			var render = function(){
+				//clear the entire canvas
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				// draw a circle with positionX
+				ctx.fillStyle = 'red';
+				ctx.beginPath();
+				ctx.arc(position.x, position.y, 10, 0, Math.PI*2, false);
+				ctx.fill();
+			};
+
+			var animate = function(delta){
+				render();
+				//call this function again
+				requestAnimationFrame(animate);
+			};
+
+			var addBackground = function(e){
+				var bg = new Background(e.target, e.target.velocityOffset);
+				backgrounds[e.target.position] = bg;
+			};
+
+			var keydown = function(e){
+				switch(e.keyCode){
+					case 37:
+						//left
+						position.x += -10;
+						break;
+					case 38:
+						//up
+						position.y += -10;
+						break;
+					case 39:
+						//right
+						position.x += 10;
+						break;
+					case 40:
+						//down
+						position.y += 10;
+						break;
+					default:
+						break;
+				}
+			};
+
+			window.addEventListener('load', function(){
+				canvas = document.getElementById('canvas');
+				ctx = canvas.getContext('2d');
+
+				//set en initial position
+				position.x = canvas.width/2;
+				position.y = canvas.height/2;
+
+				//add eventlistener for keyboard
+				document.addEventListener('keydown', keydown, false);
+
+				//start animation
+				requestAnimationFrame(animate);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<h1>Canvas - keyboard</h1>
+		<canvas id="canvas" width="400" height="400"></canvas>
+	</body>
+</html>

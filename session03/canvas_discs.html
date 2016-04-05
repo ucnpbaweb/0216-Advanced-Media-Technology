@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cancas - discs</title>
+		<meta charset="utf-8"/>
+		<script type="text/javascript">
+			var canvas, ctx, discs = [], lastdelta = 0, fps = 50;
+			//velocity = px pr sec
+			var Disc = function(position, color){
+				this.color = color;
+				this.radius = 40;
+				this.position = {'x' : position.x, 'y' : position.y};
+				this.velocity = {'x' : 0, 'y' : 0};
+			};
+
+			Disc.prototype.setvelocity = function(x, y){
+				this.velocity.x += x;
+				this.velocity.y += y;
+			};
+
+			Disc.prototype.update = function(timediff){
+				/*
+					update position with the velocity as a share of a ms acording to the timediff
+					100px*20ms/1000ms = 100px*1/50 = 2px
+				*/
+				this.position.x += this.velocity.x*timediff/1000;
+				this.position.y += this.velocity.y*timediff/1000;
+
+				if(this.position.x + this.radius > canvas.width){
+					this.position.x = canvas.width-this.radius;
+					this.velocity.x = this.velocity.x*-1;
+				}
+
+				if(this.position.x - this.radius < 0){
+					this.position.x = this.radius;
+					this.velocity.x = this.velocity.x * -1;
+				}
+
+				if(this.position.y + this.radius > canvas.height){
+					this.position.y = canvas.height - this.radius;
+					this.velocity.y = this.velocity.y * -1;
+				}
+
+				if(this.position.y-this.radius < 0){
+					this.position.y = this.radius;
+					this.velocity.y = this.velocity.y * -1;
+				}
+			};
+
+			Disc.prototype.render = function(){
+				ctx.fillStyle = this.color;
+				ctx.beginPath();
+				ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2, false);
+				ctx.fill();
+			};
+
+			var update = function(timediff){
+				discs.forEach(function(disc){
+					disc.update(timediff);
+				});
+			};
+
+			var render = function(){
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				discs.forEach(function(disc){
+					disc.render();
+				});
+			};
+
+			var animate = function(delta){
+				//number of ms from last function call
+				var timediff = delta - lastdelta;
+				if(lastdelta){
+					//update the state of all objects
+					update(timediff);
+					//redraw the canvas
+					render();
+				}
+				//overwrite lastdelta to the current one
+				lastdelta = delta;
+				//call this function again after a number of ms
+				//requestAnimationFrame(animate);
+				setTimeout(function(){requestAnimationFrame(animate);}, 1000/fps);
+			};
+
+			window.addEventListener('load', function(){
+				canvas = document.getElementById('canvas');
+				ctx = canvas.getContext('2d');
+
+				var disc1 = new Disc({'x' : 400, 'y' : 300}, 'red');
+				disc1.setvelocity(200, 15);
+
+				var disc2 = new Disc({'x' : 100, 'y' : 200}, 'green');
+				disc2.setvelocity(75, -84);
+
+				var disc3 = new Disc({'x' : 50, 'y' : 500}, 'blue');
+				disc3.setvelocity(25, -100);
+
+				discs.push(disc1);
+				discs.push(disc2);
+				discs.push(disc3);
+
+				requestAnimationFrame(animate);
+
+			}, false);
+		</script>
+	</head>
+	<body>
+		<h1>Canvas - discs</h1>
+		<canvas id="canvas" width="800" height="600"></canvas>
+	</body>
+</html>
