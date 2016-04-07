@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100">
+	<description>Random circles</description>
+	<script>
+		<![CDATA[
+		var svgns = "http://www.w3.org/2000/svg";
+		var xlink = "http://www.w3.org/1999/xlink";
+		var container, c1, current, nMouseOffsetX, nMouseOffsetY;
+
+		var init = function(){
+			//document.documentElement.addEventListener('mousemove', function(e){console.debug(e.clientX + ',' + e.clientY)},false);
+			container = document.getElementById('container');
+			c1 = document.getElementById('c1');
+			for(var i = 0; i < 24; i++){
+				var circle = c1.cloneNode(true);
+				circle.setAttribute('id', 'circle'+i);
+				var r = Math.random()*10+5;
+				var cx = Math.round(Math.random()*80+10);
+				var cy = Math.round(Math.random()*80+10);
+				var opacity = Math.random();
+				circle.setAttribute('r', r);
+				circle.setAttribute('cx', cx);
+				circle.setAttribute('cy', cy);
+				circle.setAttribute('opacity', opacity);
+				circle.setAttribute('fill', 'rgb('+Math.round(Math.random()*255)+','+Math.round(Math.random()*255)+','+Math.round(Math.random()*255)+')');
+				container.appendChild(circle);
+				circle.addEventListener('mousemove', mousemove,false);
+				circle.addEventListener('mousedown', mousedown,false);
+				circle.addEventListener('mouseup', mouseup,false);
+			}
+		}
+
+		var mousedown = function(e){
+			current = e.target;
+			var p = document.documentElement.createSVGPoint();
+			p.x = e.clientX;
+			p.y = e.clientY;
+			var m = e.target.getScreenCTM();
+			p = p.matrixTransform(m.inverse());
+			nMouseOffsetX = p.x - parseInt(e.target.getAttribute("cx"));
+			nMouseOffsetY = p.y - parseInt(e.target.getAttribute("cy")); 
+		}
+
+		var mouseup = function(e){
+			current = undefined;
+		}
+
+		var mousemove = function(e){
+			if(current){
+				var p = document.documentElement.createSVGPoint();
+				p.x = e.clientX;
+				p.y = e.clientY; 
+				var m = e.target.getScreenCTM();
+				p = p.matrixTransform(m.inverse());
+				current.setAttribute("cx", p.x - nMouseOffsetX);
+				current.setAttribute("cy", p.y - nMouseOffsetY); 
+
+			}
+		}
+		window.addEventListener('load', init, false);
+		]]>
+	</script>
+	<defs>
+		<circle id="c1" stroke-width="1" stroke="#000000" fill="red" />
+	</defs>
+	<g id="container"></g>
+</svg>

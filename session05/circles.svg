@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100">
+	<description>Random circles</description>
+	<script type="text/javascript">
+		<![CDATA[
+		var svgns = "http://www.w3.org/2000/svg";
+		var xlink = "http://www.w3.org/1999/xlink";
+		var container;
+
+		var init = function(){
+			container = document.getElementById('container');
+			for(var i = 0; i < 24; i++){
+				var circle = document.createElementNS(svgns,'use');
+				circle.setAttributeNS(xlink, 'xlink:href', '#c1');
+				circle.setAttribute('id', 'circle' + i);
+				var r = Math.random()*0.8+0.2;
+				var cx = Math.round(Math.random()*80+10);
+				var cy = Math.round(Math.random()*80+10);
+				var opacity = 1-Math.random()*.8;
+				circle.setAttribute('transform', 'translate('+cx + ', ' + cy +') scale(' + r + ')');
+				circle.setAttribute('opacity', opacity);
+				container.appendChild(circle);
+			}
+		};
+		window.addEventListener('load', init, false);
+		]]>
+	</script>
+	<defs>
+		<circle id="c1" r="10" cx="0" cy="0" stroke-width="1" stroke="#000000" fill="red"/>
+	</defs>
+	<g id="container"></g>
+</svg>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="300px" height="200px">
+	<defs>
+		<clipPath id="square">
+			<rect x="10" y="74.5" width="240" height="51" />
+		</clipPath>
+	</defs>
+	<ellipse cx="130" cy="100" rx="25" ry="90" fill="red" stroke="silver" stroke-width="8"  />
+
+	<rect x="10" y="50" width="240" height="20" fill="blue" stroke="navy" stroke-width="9" />
+
+	<rect x="10" y="130" width="240" height="20" fill="blue" stroke="navy" stroke-width="9" />
+	<ellipse cx="60" cy="100" rx="25" ry="90" fill="red" stroke="silver" stroke-width="8"  />
+
+	<ellipse cx="200" cy="100" rx="25" ry="90" fill="red" stroke="silver" stroke-width="8"  />
+
+	<rect x="10" y="90" width="240" height="20" fill="blue" stroke="navy" stroke-width="9" />
+	<ellipse clip-path="url(#square)" cx="130" cy="100" rx="25" ry="90" fill="red" stroke="silver" stroke-width="8"  />
+</svg>

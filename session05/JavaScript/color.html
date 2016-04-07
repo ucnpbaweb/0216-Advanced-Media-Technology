@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dot in embed</title>
+		<meta charset="utf-8" />
+		<script type="text/javascript">
+			var rc = function(){
+				return Math.round(Math.random()*255);
+			};
+			
+			document.addEventListener('DOMContentLoaded', function() {
+				console.log('DOM');
+				document.embeds.dot.addEventListener('load', function(e){
+					svgDoc = e.target.getSVGDocument();
+					var circle = svgDoc.getElementById('c1');
+					circle.addEventListener('click', function(e){
+						e.target.style.fill = 'rgb(' + rc() + ',' + rc() + ',' + rc() + ')';
+					}, false);
+				}, false);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<embed name="dot" src="dot.svg" width="200px" height="200px" />
+	</body>
+</html>

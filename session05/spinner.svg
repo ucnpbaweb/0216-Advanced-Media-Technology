@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 70 70" onload="init()">
+	<script>
+		<![CDATA[
+		var svgns = "http://www.w3.org/2000/svg";
+		var xlink = "http://www.w3.org/1999/xlink";
+		var container;
+		var interval;
+		var rotate = 0;
+		function init(){
+			container = document.getElementById('container');
+			for(var i = 0; i < 24; i++){
+				var line = document.createElementNS(svgns,'use');
+				line.setAttributeNS(xlink, 'xlink:href', '#l1');
+				var deg = i*15;
+				line.setAttribute('transform', 'rotate(' + deg + ')');
+				line.setAttribute('opacity', deg/360);
+				container.appendChild(line);
+			}
+			//interval = setInterval('setOpacity()', 50);
+			interval = setInterval('setRotate()', 100);
+		}
+		
+		function setRotate(){
+			rotate += 15;
+			container.setAttribute('transform', 'rotate('+rotate+')');
+		}
+		
+		function setOpacity(){
+			var useElm = container.getElementsByTagNameNS(svgns, 'use');
+			for(var i = 0; i < useElm.length; i++){
+				var currentOp = useElm[i].getAttribute('opacity');
+				var diff = 15/360;
+				var newOp = currentOp-diff;
+				if(newOp > 0){
+					useElm[i].setAttribute('opacity', currentOp-diff);
+				}else{
+					useElm[i].setAttribute('opacity', 1);	
+				}
+			}
+		}
+		]]>
+	</script>
+	<defs>
+		<line id="l1" x1="0" y1="0" x2="0" y2="-15" stroke="#023364" stroke-width="2" stroke-linecap="round" transform="translate(0,-15)" />
+	</defs>
+	<g transform="translate(35,35)">
+		<g id="container"></g>
+	</g>
+</svg>

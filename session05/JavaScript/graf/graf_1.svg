@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"  width="300" height="400">
+  <defs>
+    <rect id="r1" width="16" y="0" height="1" fill="skyblue" />
+    <line id="hline" x1="0" y1="0" x2="280" y2="0" stroke-width="1"/>
+    <line id="vline" x1="0" y1="0" x2="0" y2="200" stroke-width="1" stroke="black"/>
+  </defs>
+  
+  <g id="content" transform="rotate(180) translate(-290,-210)">
+  </g>
+  <g transform="translate(30,10)">
+    <use xlink:href="#hline" stroke="white" transform="translate(0,0)"/>
+    <use xlink:href="#hline" stroke="white" transform="translate(0,20)"/>
+    <use xlink:href="#hline" stroke="white" transform="translate(0,40)"/>
+    <use xlink:href="#hline" stroke="white" transform="translate(0,60)"/>
+    <use xlink:href="#hline" stroke="white" transform="translate(0,80)"/>
+    <use xlink:href="#hline" stroke="white" transform="translate(0,100)"/>
+    <use xlink:href="#hline" stroke="white" transform="translate(0,120)"/>
+    <use xlink:href="#hline" stroke="white" transform="translate(0,140)"/>
+    <use xlink:href="#hline" stroke="white" transform="translate(0,160)"/>
+    <use xlink:href="#hline" stroke="white" transform="translate(0,180)"/>
+    <use xlink:href="#hline" stroke="black" transform="translate(0,200)"/>
+    <use xlink:href="#vline" stroke="black" transform="translate(1,0)"/>
+  </g>
+</svg>

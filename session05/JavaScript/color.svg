@@ -1,0 +1,37 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100">
+	<script>
+		<![CDATA[
+		var rc = function(val){
+			var randomVal = Math.random()*20-10;
+			var newValue = val+randomVal;
+			if(newValue > 255){
+				newValue = 255;
+			}else if(newValue < 0){
+				newValue = 0;
+			}
+			return Math.round(newValue);
+		};
+		
+		var newColor = function(c){
+			c.red = rc(c.red);
+			c.green = rc(c.green);
+			c.blue = rc(c.blue);
+			return 'rgb(' + c.red + ',' + c.green + ',' + c.blue + ')';
+		};
+		
+		window.addEventListener('load', function(){
+			var circle = document.getElementById('c1');
+			circle.red = 125;
+			circle.green = 125;
+			circle.blue = 125;
+			circle.addEventListener('mousemove', function(e){
+				var c = e.target;
+				c.style.fill = newColor(c);
+			}, false);
+		}, false);
+		]]>
+	</script>
+	<circle id="c1" cx="50" cy="50" r="50" style="fill:red"/>
+</svg>

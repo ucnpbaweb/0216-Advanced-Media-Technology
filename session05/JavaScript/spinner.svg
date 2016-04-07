@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 70 70">
+	<script>
+		<![CDATA[
+		var svgns = "http://www.w3.org/2000/svg";
+		var xlink = "http://www.w3.org/1999/xlink";
+		var container;
+		var interval;
+		var rotate = 0;
+		
+		var setRotate = function(){
+			rotate += 15;
+			container.setAttribute('transform', 'rotate('+rotate+')');
+		};
+		
+		window.addEventListener('load', function(){
+			container = document.getElementById('container');
+			for(var i = 0; i < 24; i++){
+				var line = document.createElementNS(svgns, 'use');
+				line.setAttributeNS(xlink, 'xlink:href', '#l1');
+				var deg = i*15;
+				line.setAttribute('transform', 'rotate(' + deg + ')');
+				line.setAttribute('opacity', deg/360);
+				container.appendChild(line);
+			}
+			interval = setInterval(setRotate, 100);
+		}, false);
+		]]>
+	</script>
+	<defs>
+		<line id="l1" x1="0" y1="0" x2="0" y2="-15" stroke="#023364" stroke-width="2" stroke-linecap="round" transform="translate(0,-15)" />
+	</defs>
+	<g transform="translate(35,35)">
+		<g id="container"></g>
+	</g>
+</svg>

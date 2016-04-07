@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="340px" height="143px">
+	<defs>
+		<linearGradient id="r" >
+			<stop offset="0" stop-color="rgb(220,0,0)"/>
+			<stop offset=".5" stop-color="rgb(220,220,0)"/>
+			<stop offset="1" stop-color="rgb(0,140,0)"/>
+		</linearGradient>
+		<linearGradient id="rr" xlink:href="#r" gradientTransform="rotate(180,.5,0)" />
+		<g id="wg" transform="translate(0,118)">
+			<text font-family="Verdana" font-size="160" style="font-weight:bold" stroke="black" stroke-width="2">W</text>
+		</g>
+	</defs>
+	<rect x="1" y="1" width="338" height="141" stroke="black" stroke-width="2" fill="none"/>
+	<g transform="translate(165,31)">
+		<use xlink:href="#wg" fill="url(#rr)" transform="rotate(-10,0,0)" />
+	</g>
+	<use xlink:href="#wg" fill="url(#r)" transform="rotate(10,0,0)"/>
+</svg>

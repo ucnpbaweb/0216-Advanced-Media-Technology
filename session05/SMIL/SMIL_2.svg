@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100">
+	<script><![CDATA[
+		function end(id){
+			document.getElementById(id).style.fill = 'green';
+		}
+	]]></script>
+	<circle id="c1" cx="10" cy="10" r="10" fill="red">
+	  <animate attributeName="cx" dur="3" values="10;90;10" repeatCount="indefinite"/>
+	</circle>
+	<circle cx="10" cy="40" r="10" fill="blue" id="c2">
+	  <animate id="first" attributeName="cx" begin="c1.click" dur="1.5" from="10" to="90" onend="end('c2')"/>
+	  <animate attributeName="cx" begin="first.end" dur="1.5" from="90" to="10" calcMode="spline" keySplines="1 0 .5 1"/>
+	</circle>
+</svg>

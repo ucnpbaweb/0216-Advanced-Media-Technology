@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Game - Framework</title>
+		<meta charset="utf-8"/>
+		<style type="text/css">
+			html, body {margin: 0;}
+			#game {
+				position: relative;
+				margin: 0 auto;
+				width: 400px;
+				height: 500px;
+				border: solid black 1px;
+			}
+
+			#game .screen {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				z-index: 10;
+				display: none;
+				text-align: center;
+			}
+
+			#game .screen.active {
+				display: block;
+			}
+
+			#game .screen ul {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+			}
+			.hide {
+				display: none;
+			}
+		</style>
+		<script type="text/javascript">
+			var mathgame = {};
+			mathgame.screens = {};
+			mathgame.settings = {
+				width : 400,
+				height : 400
+			};
+		</script>
+		<script type="text/javascript" src="game_framework_screens.js"></script>
+		<script type="text/javascript" src="game_framework_mathgame.js"></script>
+		<script type="text/javascript">
+			window.addEventListener('load', function(){
+				mathgame.game.showScreen('splashscreen');
+			}, false);
+		</script>
+	</head>
+	<body>
+		<div id="game">
+			<div class="screen" id="splashscreen">
+				<h1>The Math Game</h1>
+				<p>Click to continue</p>
+			</div>
+			<div class="screen" id="mainmenu">
+				<h2>The Math Game</h2>
+				<ul>
+					<li><button name="gamescreen">Play</button></li>
+					<li><button name="highscore">Highscore</button></li>
+					<li><button name="aboutscreen">About</button></li>
+					<li><button name="exitscreen">Exit</button></li>
+				</ul>
+			</div>
+			<div class="screen" id="gamescreen">
+				<div id="board">
+					<div id="stats"></div>
+					<div id="question"></div>
+					<form name="answer">
+						<input type="text" name="answer" />
+						<button>Answer</button>
+					</form>
+				</div>
+				<div id="result"></div>
+			</div>
+			<div class="screen" id="highscore">
+				<h2>Highscore</h2>
+			</div>
+			<div class="screen" id="aboutscreen">
+				<h2>About</h2>
+			</div>
+			<div class="screen" id="exitscreen">
+				<h2>Exit</h2>
+			</div>
+		</div>
+	</body>
+</html>

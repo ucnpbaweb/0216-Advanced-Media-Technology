@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800px" height="600px">
+	<defs>
+		<radialGradient id="bg" r="80%" fx="100" fy="400" >
+			<stop offset="0" stop-color="rgb(0,0,240)"/>
+			<stop offset="1" stop-color="rgb(0,0,30)"/>
+			<animate attributeName="fx" dur="60" begin="0" values="200;-200" />
+			<animate attributeName="fy" dur="60" begin="0" values="400;0" />
+		</radialGradient>
+		
+		<path id="curve" stroke="black" fill="none" d="M -100,400 C 200,200 600,200 900,400"/>
+		
+	</defs>
+	<rect x="0" y="0" width="100%" height="100%" fill="url(#bg)"/>
+
+	<g transform="rotate(0)">
+		<path fill="rgb(205,205,0)" transform="rotate(-20)">
+			<animate id="firstHalf" attributeName="d" dur="30" begin="0" values="
+				M 0,0 C 66.667,0 66.667,100 0,100 C 66.667,100 66.667,0 0,0;
+				M 0,0 C 66.667,0 66.667,100 0,100 C -66.667,100 -66.667,0 0,0" />
+			<animate attributeName="d" dur="30" begin="firstHalf.end" values="
+				M 0,0 C 66.667,0 66.667,100 0,100 C -66.667,100 -66.667,0 0,0;
+				M 0,0 C -66.667,0 -66.667,100 0,100 C -66.667,100 -66.667,0 0,0" />
+		</path>
+		<animateMotion dur="60" rotate="0">
+			<mpath xlink:href="#curve"/>
+		</animateMotion>
+	</g>
+	<path fill="black" d="M 0,500 C 200,450 600,450 800,500 L 800,600 0,600 z" />
+</svg>

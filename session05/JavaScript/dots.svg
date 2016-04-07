@@ -1,0 +1,54 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 240 240">
+	<script>
+		//<![CDATA[
+		var svgns = "http://www.w3.org/2000/svg";
+		var xlink = "http://www.w3.org/1999/xlink";
+		var container;
+		var interval;
+		var rotate = 0;
+
+		var setOpacity = function(){
+			var useElm = container.getElementsByTagNameNS(svgns, 'use');
+			for(var i = 0; i < useElm.length; i++){
+				var currentOp = parseFloat(useElm[i].getAttribute('opacity'));
+				var diff = 1/(23+23);
+				if(useElm[i].add){
+					useElm[i].setAttribute('opacity', currentOp+diff);
+					if(currentOp+diff > 1){
+						useElm[i].add = false;
+					}
+				}else{
+					useElm[i].setAttribute('opacity', currentOp-diff);	
+					if(currentOp-diff < 0){
+						useElm[i].add = true;
+					}
+				}
+			}
+		};
+
+		window.addEventListener('load', function(){
+			container = document.getElementById('container');
+			for(var i = 0; i < 24; i++){
+				for(var j = 0; j < 24; j++){
+					var circle = document.createElementNS(svgns,'use');
+					circle.setAttributeNS(xlink, 'xlink:href', '#c1');
+					circle.setAttribute('transform', 'translate(' + i*10 + ',' + j*10 + ')');
+					circle.setAttribute('opacity', (i+j)/(23+23));
+					circle.add = false;
+					container.appendChild(circle);
+				}
+			}
+			interval = setInterval(setOpacity, 20);
+		}, false);
+		//]]>
+	</script>
+	<defs>
+		<circle id="c1" x="0" y="0" r="5" fill="red"/>
+	</defs>
+	<g transform="translate(5,5)">
+		<g id="container">
+		</g>
+	</g>
+</svg>

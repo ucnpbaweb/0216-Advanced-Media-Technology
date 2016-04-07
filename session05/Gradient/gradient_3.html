@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Testing gradient</title>
+		<style>
+			body {
+				width: 800px;
+				margin: 0 auto;
+				font-family: sans-serif;
+			}
+			
+			.top {
+				height: 60px;
+			}
+			
+			.gradient {
+				background-image: url(gradient_1.svg);
+				background-repeat: repeat-x;
+			}
+			
+			.gradient2 {
+				background-image: url(gradient_3.svg);
+				background-repeat: repeat-x;
+			}
+			
+			.gradient3 {
+				background-image: url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiA%2BDQoJPGRlZnM%2BDQoJCTxsaW5lYXJHcmFkaWVudCBpZD0iciIgZ3JhZGllbnRUcmFuc2Zvcm09InJvdGF0ZSg5MCkiPg0KCQkJPHN0b3Agb2Zmc2V0PSIwIiBzdG9wLW9wYWNpdHk9Ii42IiBzdG9wLWNvbG9yPSJ3aGl0ZSIvPg0KCQkJPHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1vcGFjaXR5PSIwIiBzdG9wLWNvbG9yPSJ3aGl0ZSIvPg0KCQkJPHN0b3Agb2Zmc2V0PSIuNSIgc3RvcC1vcGFjaXR5PSIuMiIgc3RvcC1jb2xvcj0id2hpdGUiLz4NCgkJCTxzdG9wIG9mZnNldD0iMSIgc3RvcC1vcGFjaXR5PSIuOSIgc3RvcC1jb2xvcj0id2hpdGUiLz4NCgkJPC9saW5lYXJHcmFkaWVudD4NCgk8L2RlZnM%2BDQoJPHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNyKSIvPg0KPC9zdmc%2B');
+				background-repeat: repeat-x;
+			}
+			
+			h1 {
+				margin: 0 0 .5em;
+			}
+			
+			p {
+				margin: 0 0 .5em;
+			}
+			
+			nav ul {
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				height: 1.8em;
+			}
+			
+			nav li {
+				float: left;
+				margin: 0 .2em 0 0;
+			}
+			
+			nav li a {
+				display: inline-block;
+				padding: .2em .8em;
+				text-decoration: none;
+				-webkit-border-radius: 6px;
+				border-radius: 6px;
+				border-style: none;
+				color: white;
+				background-color: #462d64;
+			}
+			nav li a:hover {
+				background-color: #825ab4;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<header class="gradient top">
+			<h1>Testing gradient</h1>
+		</header>
+		<nav>
+			<ul>
+				<li><a class="gradient2" href="#home">Home</a></li>
+				<li><a class="gradient3" href="#about">About</a></li>
+			</ul>
+		</nav>
+		<section>
+			<p class="gradient2" style="background-color: navy">Gradient add to the header element</p>
+		</section>
+	</body>
+</html>

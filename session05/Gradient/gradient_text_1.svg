@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="300px" height="200px">
+	<defs>
+		<linearGradient id="r" >
+			<stop offset="0" stop-color="rgb(220,0,0)"/>
+			<stop offset=".5" stop-color="rgb(220,220,0)"/>
+			<stop offset="1" stop-color="rgb(0,140,0)"/>
+		</linearGradient>
+	</defs>
+	<text font-family="Verdana" font-size="230" x="10" y="180" style="font-weight:bold" stroke="black" stroke-width="4" fill="url(#r)">W</text>
+</svg>
