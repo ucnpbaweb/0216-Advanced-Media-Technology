@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>CustomEvent</title>
+		<style>
+			body {
+				width: 600px;
+				margin: 0 auto;
+				font-family: sans-serif;
+				position: relative;
+			}
+
+			form#updateItem {
+				position: absolute;
+				right: 0;
+				display: none;
+			}
+		</style>
+		
+		<script>
+			//polyfill for IE
+			(function () {
+				function CustomEvent ( event, params ) {
+					params = params || { bubbles: false, cancelable: false, detail: undefined };
+					var evt = document.createEvent( 'CustomEvent' );
+					evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+					return evt;
+				};
+
+				CustomEvent.prototype = window.CustomEvent.prototype;
+
+				window.CustomEvent = CustomEvent;
+			})();
+
+			var itemList, items = {};
+
+			var Item = function(title, id){
+				this.title = title;
+				this.id = id;
+			};
+
+			(function(obj){
+
+				var newItem = function(e){
+					obj[e.detail.item.id] = e.detail.item;
+					var ev = new CustomEvent('newItemCreated',
+						{
+							detail: {
+								item: obj[e.detail.item.id]
+							},
+							bubbles: true,
+							cancelable: true
+						}
+					);
+					document.dispatchEvent(ev);
+				};
+
+				var updateItem = function(e){
+					obj[e.detail.item.id].title = e.detail.item.title;
+					var ev = new CustomEvent('updateItemDone',
+						{
+							detail: {
+								item: obj[e.detail.item.id]
+							},
+							bubbles: true,
+							cancelable: true
+						}
+					);
+					document.dispatchEvent(ev);
+				};
+
+				document.addEventListener('newItem', newItem, false);
+				document.addEventListener('updateItem', updateItem, false);
+			})(items);
+			
+			var submitNewItem = function(e){
+				e.preventDefault();
+				var item = new Item(e.target.title.value, Date.now());
+				var ev = new CustomEvent('newItem',
+						{
+							detail: {
+								item: item
+							},
+							bubbles: true,
+							cancelable: true
+						}
+					);
+				document.dispatchEvent(ev);
+			};
+
+			var submitUpdateItem = function(e){
+				e.preventDefault();
+				e.target.style.display = 'none';
+				var item = new Item(e.target.title.value, e.target.id.value);
+				var ev = new CustomEvent('updateItem',
+						{
+							detail: {
+								item: item
+							},
+							bubbles: true,
+							cancelable: true
+						}
+					);
+				document.dispatchEvent(ev);
+			};
+			
+			var newItemToUI = function(e){
+				var li = document.createElement('li');
+				li.innerHTML = e.detail.item.title;
+				li.setAttribute('data-id', e.detail.item.id);
+				itemList.appendChild(li);
+			};
+
+			var updateItemToUI = function(e){
+				var li = itemList.querySelector('li[data-id ="' + e.detail.item.id + '"]');
+				li.innerHTML = e.detail.item.title;
+			};
+
+			var selectItem = function(e){
+				var id = parseInt(e.target.getAttribute('data-id'));
+				document.forms.updateItem.title.value = items[id].title;
+				document.forms.updateItem.id.value = items[id].id;
+				document.forms.updateItem.style.display = 'block';
+			};
+			
+			window.addEventListener('load', function(){
+				itemList = document.getElementById('itemList');
+				itemList.addEventListener('click', selectItem, false);
+
+				document.addEventListener('newItemCreated', newItemToUI, false);
+				document.addEventListener('updateItemDone', updateItemToUI, false);
+
+				document.forms.newItem.addEventListener('submit', submitNewItem, false);
+				document.forms.updateItem.addEventListener('submit', submitUpdateItem, false);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<h1>CustomEvent</h1>
+		<form name="newItem"><input type="text" name="title"/><button>New item</button></form>
+		<form id="updateItem" name="updateItem"><input type="text" name="title"/><input type="hidden" name="id" /><button>Update item</button></form>
+		<ul id="itemList"></ul>
+	</body>
+</html>

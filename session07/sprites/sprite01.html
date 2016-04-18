@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Sprite01</title>
+		<meta charset="utf-8">
+		<script type="text/javascript">
+			var sprite = new Image();
+			var canvas, ctx;
+			var p1;
+
+			var Person = function(sprite){
+				this.sprite = sprite;
+				this.move = {};
+				this.x = 0;
+				this.y = 120;
+				this.velocityY = 0;
+				this.spriteState = {'x' : 5, 'y' : 0};
+				this.spriteStates = {
+					'right' : [
+						{'left':160, 'top':0},
+						{'left':200, 'top':0},
+						{'left':240, 'top':0},
+						{'left':280, 'top':0}],
+					'standright' : [{'left':160, 'top':0}],
+					'standleft' : [{'left':0, 'top':0}]
+				};
+				this.lastDelta;
+			};
+
+			Person.prototype.update = function(delta){
+				if(this.lastDelta){
+					//update the y position
+					this.y += this.velocityY*(delta-this.lastDelta)/1000;
+					this.velocityY = this.velocityY+400*(delta-this.lastDelta)/1000;
+					//if he hits the floor stop the "fall"
+					if(this.y+120 > canvas.height){
+						this.y = canvas.height-120;
+						this.velocityY = 0;
+					}
+				}
+				if(this.move.moving){
+					if(!this.move.started){
+						this.move.startmovetime = delta;
+						this.move.started = true;
+					}
+					var perc = (delta-this.move.startmovetime)/this.move.duration; //between 0 and 1
+
+					var s = Math.floor(perc * 3);
+					this.spriteState.x = this.spriteStates[this.move.direction][s].left;
+					this.x = this.move.movestart.x + this.move.dist * perc;
+					console.debug(s);
+					if(perc > 1){
+						this.move.moving = false;
+						//apply is used here to so that "this" referes to the Person object
+						this.move.nextFunc.apply(this,[this.move.direction]);
+					}
+				}
+				this.lastDelta = delta;
+			};
+
+			Person.prototype.render = function(){
+				//ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+				ctx.drawImage(this.sprite, this.spriteState.x, this.spriteState.y, 40, 120, this.x, this.y, 40, 120);
+			};
+
+			Person.prototype.walk = function(direction){
+				var dist = (direction == 'right') ? 20 : -20;
+				if(!this.move.moving){
+					this.move = {
+						'moving' : true,
+						'started' : false,
+						'direction' : direction,
+						'duration' : 400,
+						'dist' : 30,
+						'nextFunc' : this.stand,
+						'startmovetime' : 0,
+						'movestart': {'x' : this.x, 'y' : this.y}
+					};
+				} else {
+					this.move.nextFunc = this.walk;
+				}
+			};
+
+			Person.prototype.jump = function(){
+				this.velocityY += -150;
+			};
+
+			Person.prototype.stand = function(direction){
+				this.spriteState.x = this.spriteStates['stand'+direction][0].left;
+				this.spriteState.y = this.spriteStates['stand'+direction][0].top;
+			};			
+
+			var update = function(delta){
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				p1.update(delta);
+				p1.render();
+			};
+
+			var keydown = function(e){
+				switch(e.keyCode){
+					case 37: //left
+						//p1.walk('left');
+						break;
+					case 38: //up
+						p1.jump();
+						break;
+					case 39: //rigth
+						p1.walk('right');
+						break;
+				}
+			};
+
+			window.addEventListener('load', function(){
+				canvas = document.getElementById('canvas');
+				ctx = canvas.getContext('2d');
+
+				sprite.addEventListener('load', function(){
+					p1 = new Person(sprite);
+					setInterval(function(){
+						requestAnimationFrame(update);
+					}, 50);
+				}, false);
+				sprite.src = 'sprite01.png';
+
+				document.addEventListener('keydown', keydown, false);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<canvas id="canvas" width="400" height="300" style="border:1px solid black;"></canvas>
+	</body>
+</html>

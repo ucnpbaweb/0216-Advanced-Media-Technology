@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Pub/sub</title>
+		<style>
+			body {
+				width: 600px;
+				margin: 0 auto;
+				font-family: sans-serif;
+			}
+		</style>
+		<script src="pubsub.js"></script>
+		<script>
+			var itemList, itemsObj = {};
+			
+			var Item = function(title){
+				this.id = Date.now();
+				this.title = title;
+			};
+			
+			var newItemToUI = function(topic, item){
+				var li = document.createElement('li');
+				li.innerHTML = item.title;
+				li.setAttribute('data-id', item.id);
+				itemList.appendChild(li);
+			};
+
+			var newItemToList = function(topic, item){
+				itemsObj[item.id] = item;
+			};
+
+			var submitNewItem = function(e){
+				e.preventDefault();
+				var item = new Item(e.target.title.value);
+				Pubsub.publish('newitem', item);
+			};
+
+			window.addEventListener('load', function(){
+				itemList = document.getElementById('itemList');
+
+				document.forms.newItem.addEventListener('submit', submitNewItem, false);
+
+				Pubsub.subscribe('newitem', newItemToUI);
+				Pubsub.subscribe('newitem', newItemToList);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<h1>Pub/sub</h1>
+		<form name="newItem"><input type="text" name="title"/><button>New item</button></form>
+		<ul id="itemList"></ul>
+	</body>
+</html>

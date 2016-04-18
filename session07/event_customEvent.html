@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>CustomEvent</title>
+		<style>
+			body {
+				width: 600px;
+				margin: 0 auto;
+				font-family: sans-serif;
+			}
+		</style>
+		
+		<script>
+			//polyfill for IE
+			(function () {
+				function CustomEvent ( event, params ) {
+					params = params || { bubbles: false, cancelable: false, detail: undefined };
+					var evt = document.createEvent( 'CustomEvent' );
+					evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+					return evt;
+				};
+
+				CustomEvent.prototype = window.CustomEvent.prototype;
+
+				window.CustomEvent = CustomEvent;
+			})();
+
+			var itemList, itemsObj = {};
+
+			var Item = function(title){
+				this.title = title;
+				this.id = Date.now();
+			};
+			
+			var submitNewItem = function(e){
+				e.preventDefault();
+				var item = new Item(e.target.title.value);
+				var ev = new CustomEvent('newItem',
+						{
+							detail: {'item': item}
+						}
+					);
+				document.dispatchEvent(ev);
+			};
+			
+			var newItemToUI = function(e){
+				var li = document.createElement('li');
+				li.innerHTML = e.detail.item.title;
+				li.setAttribute('data-id', e.detail.item.id);
+				itemList.appendChild(li);
+			};
+
+			var newItemToList = function(e){
+				itemsObj[e.detail.item.id] = e.detail.item;
+			};
+
+			var newItemToMessage = function(e){
+				console.log(e);
+				var message = '';
+				if(e.type == 'newItem') {
+					message = 'The new item was created...';
+				}
+				document.getElementById('message').innerHTML = message;
+			};
+			
+			window.addEventListener('load', function(){
+				itemList = document.getElementById('itemList');
+				
+				document.addEventListener('newItem', newItemToUI, false);
+				document.addEventListener('newItem', newItemToList, false);
+				document.addEventListener('newItem', newItemToMessage, false);
+
+				document.forms.newItem.addEventListener('submit', submitNewItem, false);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<h1>CustomEvent</h1>
+		<div id="message"></div>
+		<form name="newItem">
+			<input type="text" name="title"/>
+			<button>New item</button>
+		</form>
+		<ul id="itemList"></ul>
+	</body>
+</html>

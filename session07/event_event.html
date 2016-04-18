@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Event</title>
+		<style>
+			body {
+				width: 600px;
+				margin: 0 auto;
+				font-family: sans-serif;
+			}
+		</style>
+		<script>
+			var newItemBtn, startAutoBtn, createNewItem, list;
+			var interval;
+			
+			var createNewItem = function(e){
+				var li = document.createElement('li');
+				li.innerHTML = 'Item ' + list.children.length;
+				list.appendChild(li);
+				numOfItems.innerHTML = list.children.length;
+			};
+
+			var autoClick = function() {
+				var ev = new Event('click', {bubbles:true});
+   				newItemBtn.dispatchEvent(ev);
+			};
+
+			var startAuto = function(){
+				var interval = setInterval(autoClick, 1000);
+			};
+			
+			window.addEventListener('load', function(){
+				list = document.getElementById('list1');
+				numOfItems = document.getElementById('numOfItems');
+
+				newItemBtn = document.getElementById('newItemBtn');
+				newItemBtn.addEventListener('click', createNewItem, false);
+				//newItemBtn.addEventListener('click', function(){alert('click');}, false);
+
+				startAutoBtn = document.getElementById('startAutoBtn');
+				startAutoBtn.addEventListener('click', startAuto, false);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<h1>Event</h1>
+		<div>
+			<button id="newItemBtn">New item</button>
+			<button id="startAutoBtn">Start auto</button>
+		</div>
+		<div>Number of items: <span id="numOfItems">0</span></div>
+		<ul id="list1"></ul>
+	</body>
+</html>

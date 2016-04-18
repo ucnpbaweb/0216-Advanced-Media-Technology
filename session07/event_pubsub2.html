@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Pub/sub</title>
+		<style>
+			body {
+				width: 600px;
+				margin: 0 auto;
+				font-family: sans-serif;
+			}
+			
+			#message {
+				border: 1px solid black;
+				background-color: yellow;
+				border: 5px;
+			}
+		</style>
+		<script src="pubsub.js"></script>
+		<script>
+			var Items = {}, list, message;
+			
+			var Item = function(id, title){
+				this.id = id;
+				this.title = title;
+			};
+			
+			(function(obj) {
+				obj.itemArr = [];
+				
+				var addNewItem = function(topics, title){
+					var id = Date.now();
+					var item = new Item(id, title);
+					obj.itemArr.push(item);
+					Pubsub.publish('newitemcreated', item);
+				};
+			
+				var updateItem = function(topics, args){
+					for(var j = 0; j < obj.itemArr.length; j++){
+						var item = obj.itemArr[j];
+						if(item.id == args[0]){
+							item.title = args[1];
+							j = obj.itemArr.length;
+						}
+					}
+				};
+				var subscription1 = Pubsub.subscribe('newitemtitle', addNewItem);
+				var subscription2 = Pubsub.subscribe('updateitem', updateItem);
+			})(Items);
+
+			
+			var addItemToList = function(topics, item){
+				var li = document.createElement('li');
+				li.setAttribute('contentEditable', 'true');
+				li.setAttribute('data-id', item.id);
+				li.innerHTML = item.title;
+				li.addEventListener('keyup', function(e){
+					//oninput is not working in IE
+					Pubsub.publish('updateitem', [parseInt(e.target.getAttribute('data-id')), e.target.textContent]);
+				}, false);
+				list.appendChild(li);
+			};
+			
+			var messageHandler = function(topics, item){
+				message.innerHTML = "New item created (" + item.title + ")";
+			};
+			
+			window.addEventListener('load', function(){
+				list = document.getElementById('list1');
+				message = document.getElementById('message');
+				
+				document.forms.new.addEventListener('submit', function(e){
+					e.preventDefault();
+					Pubsub.publish('newitemtitle', e.target.title.value);
+				}, false);
+				
+				var testSubscription1 = Pubsub.subscribe('newitemcreated', addItemToList);
+				var testSubscription2 = Pubsub.subscribe('newitemcreated', messageHandler);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<h1>Pub/sub</h1>
+		<div id="message"></div>
+		<form name="new"><input type="text" name="title"/><button>New item</button></form>
+		<ul id="list1"></ul>
+	</body>
+</html>

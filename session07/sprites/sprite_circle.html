@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Sprite_circle</title>
+		<meta charset="utf-8">
+		<script type="text/javascript">
+			var sprite = new Image();
+			var canvas, ctx;
+			var state = 0;
+			var position = {'x':0,'y':0};
+			var states = [
+					{'left':0,'top':0,'width':200,'height':200},
+					{'left':200,'top':0,'width':200,'height':200},
+					{'left':400,'top':0,'width':200,'height':200},
+					{'left':600,'top':0,'width':200,'height':200},
+					{'left':800,'top':0,'width':200,'height':200},
+					{'left':1000,'top':0,'width':200,'height':200},
+					{'left':800,'top':0,'width':200,'height':200},
+					{'left':600,'top':0,'width':200,'height':200},
+					{'left':400,'top':0,'width':200,'height':200},
+					{'left':200,'top':0,'width':200,'height':200}
+				];		
+
+			var update = function(delta){
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ctx.drawImage(this.sprite, states[state].left, states[state].top, states[state].width, states[state].height, position.x, position.y, states[state].width, states[state].height);
+				state++;
+				state = state > states.length-1 ? 0 : state;
+			};
+
+			window.addEventListener('load', function(){
+				canvas = document.getElementById('canvas');
+				ctx = canvas.getContext('2d');
+				sprite.addEventListener('load', function(){
+					setInterval(update, 100);
+				}, false);
+				sprite.src = 'sprite_circle.png';
+			}, false);
+		</script>
+	</head>
+	<body>
+		<canvas id="canvas" width="400" height="300" style="border:1px solid black;"></canvas>
+	</body>
+</html>
