@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Closure</title>
+		<meta charset="utf-8"/>
+		<script type="text/javascript">
+
+			var User = function(name){
+				this.name = name;
+				var self = this;
+
+				[1,2,3].forEach(function(item){
+					self.name += item;
+				});
+				this = self;
+
+				[1,2,3].forEach((item) => {
+					this.name += item;
+				});
+
+				this.getName = function(){
+					return this.name;
+				};
+			};
+
+			var u1 = new User('Christian');
+
+			var Pet = function(name){
+				this.name = name;
+			};
+
+			Pet.prototype.getName = function(){
+				return this.name;
+			};
+
+			var p1 = new Pet('Rollo');
+
+
+		</script>
+	</head>
+	<body>
+
+	</body>
+</html>
