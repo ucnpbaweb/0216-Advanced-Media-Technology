@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cancas - gravity</title>
+		<meta charset="utf-8"/>
+		<script type="text/javascript">
+			var canvas, ctx, ball, lastdelta = 0, starttime, fps = 25;
+			
+			var Ball = function(position, color, radius){
+				this.color = color;
+				this.radius = radius;
+				this.position = {'x' : position.x, 'y' : position.y};
+				this.velocity = {'x' : 0, 'y' : 0};
+				this.move = [];
+			};
+
+			Ball.prototype.update = function(delta){
+				//for each move in the this.move array
+				for(var i = 0; i < this.move.length; i++){
+					var moveObj = this.move[i];
+					if(moveObj.moving){
+						if(!moveObj.started){
+							this.startMoveTime = delta;
+							moveObj.started = true;
+						}
+						var perc = (delta-this.startMoveTime)/moveObj.time;
+
+						var propArr = String.split(moveObj.prop,'.');
+						//find the property
+						var propObj = this;
+						while (propArr.length > 1)
+							propObj = propObj[propArr.shift()];
+						//set a the new value of the property
+						propObj[propArr.shift()] = moveObj.movestart + moveObj.dist * moveObj.func(perc);
+						//if done moving set moving to false
+						moveObj.moving = (perc > 1) ? false : true;
+					}
+				}
+				//remove moves that are done
+				for(var i = this.move.length; i > 0;i--){
+					var moveObj = this.move[i-1];
+					if(!moveObj.moving){
+						this.move.splice(i-1,1);
+					}
+				}
+			};
+
+			Ball.prototype.moveit = function(dist, time, func, property){
+				var propArr = String.split(property,'.');
+				//find the property
+				var propVal = this;
+				while (propArr.length > 0)
+        			propVal = propVal[propArr.shift()];
+        		//push a new move to the array
+				this.move.push({
+					'moving' : true,
+					'started' : false,
+					'dist' : dist,
+					'time' : time,
+					'func': func,
+					'movestart' : propVal,
+					'prop' : property
+				});
+			};
+
+			Ball.prototype.render = function(){
+				ctx.fillStyle = this.color;
+				ctx.beginPath();
+				ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2, false);
+				ctx.fill();
+			};
+
+			var update = function(delta){
+				ball.update(delta);
+			};
+
+			var render = function(){
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				ball.render();
+			};
+
+			var animate = function(delta){
+				//number of ms from last function call
+				var timediff = delta - lastdelta;
+				if(lastdelta){
+					//update the state of all objects
+					update(delta);
+					//redraw the canvas
+					render();
+				}
+				//overwrite lastdelta to the current one
+				lastdelta = delta;
+				//call this function again after a number of ms
+				setTimeout(function(){
+					requestAnimationFrame(animate);
+				}, 1000/fps);
+			};
+
+			var linear = function(){
+				return function(perc){return perc;};
+			};
+
+			var easeIn = function(str){
+				return function(perc){
+					return Math.pow(perc, str*2);
+				};
+			};
+			var easeOut = function(str){
+				return function(perc){
+					return 1 - Math.pow(1 - perc, str*2);
+				};
+			};
+
+			var easeInOut = function(){
+				return function(perc){
+					return perc - Math.sin(perc*2*Math.PI) / (2*Math.PI);
+				};
+			};
+
+			var custom1 = function(val = 1){
+				return function(perc){
+					return perc - Math.sin(perc*2*Math.PI)*val;
+				};
+			};
+
+			window.addEventListener('load', function(){
+				canvas = document.getElementById('canvas');
+				ctx = canvas.getContext('2d');
+
+				canvas.addEventListener('click', function(){
+					ball.moveit(200, 2000, custom1(.3), 'position.x');
+					ball.moveit(20, 2000, easeInOut(.3), 'radius');
+				}, false);
+
+				ball = new Ball({'x' : 50, 'y' : 50}, 'red', 20);
+
+				requestAnimationFrame(animate);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<h1>Canvas - gravity</h1>
+		<div id="speed"></div>
+		<canvas id="canvas" width="800" height="100" style="border: solid 1px black;"></canvas>
+	</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Cancas - gravity 2</title>
+		<meta charset="utf-8"/>
+		<script type="text/javascript">
+			var canvas, ctx, speed, items = [], lastdelta = 0, starttime, fps = 100, gforce = 9.81;
+			var falling = true;
+			var Ball = function(position, color, radius){
+				this.color = color;
+				this.radius = radius;
+				this.position = {'x' : position.x, 'y' : position.y};
+				this.velocity = {'x' : 10, 'y' : 0};
+			};
+
+			Ball.prototype.update = function(timediff){
+				//pick up speed
+				this.velocity.y += gforce*timediff/1000;
+				// move ball
+				this.position.x += this.velocity.x;
+				this.position.y += this.velocity.y;
+
+				// if hitting edges
+				if(this.position.x + this.radius > canvas.width){
+					this.position.x = canvas.width-this.radius;
+					this.velocity.x = this.velocity.x*-1;
+				}
+
+				if(this.position.x - this.radius < 0){
+					this.position.x = this.radius;
+					this.velocity.x = this.velocity.x * -1;
+				}
+
+				if(this.position.y + this.radius > canvas.height){
+					falling = false;
+					this.position.y = canvas.height - this.radius;
+					this.velocity.y = this.velocity.y * -0.6;
+					this.velocity.x = this.velocity.x * 0.98;
+				}
+
+				if(this.position.y-this.radius < 0){
+					this.position.y = this.radius;
+					this.velocity.y = this.velocity.y * -1;
+				}
+			};
+
+			Ball.prototype.render = function(){
+				ctx.fillStyle = this.color;
+				ctx.beginPath();
+				ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2, false);
+				ctx.fill();
+			};
+
+			var update = function(timediff){
+				items.forEach(function(item){
+					item.update(timediff);
+				});
+			};
+
+			var render = function(){
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				predrawing();
+				items.forEach(function(item){
+					item.render();
+					if(falling){
+						speed.innerHTML = +(Math.round(item.velocity.y+"e+2")+"e-2") + ' m/s - ';
+						speed.innerHTML += +(Math.round((lastdelta - starttime)/1000+"e+2")+"e-2") + ' s';
+					}
+				});
+			};
+
+			var predrawing = function(){
+				ctx.save();
+				for(var i = 0; i < 13; i++){
+					//text
+					ctx.fillStyle = 'black';
+					ctx.font = '12px Verdana, sans-serif';
+					ctx.textBaseline = 'top';
+					ctx.textAlign = 'center';
+					ctx.fillText(i*50, 20, 20+i*50);
+				}
+			};
+
+			var animate = function(delta){
+				starttime = isNaN(starttime) ? delta : starttime;
+				//number of ms from last function call
+				var timediff = delta - lastdelta;
+				if(lastdelta){
+					//update the state of all objects
+					update(timediff);
+					//redraw the canvas
+					render();
+				}
+				//overwrite lastdelta to the current one
+				lastdelta = delta;
+				//call this function again after a number of ms
+				setTimeout(function(){requestAnimationFrame(animate);}, 1000/fps);
+			};
+
+			window.addEventListener('load', function(){
+				canvas = document.getElementById('canvas');
+				ctx = canvas.getContext('2d');
+				speed = document.getElementById('speed');
+
+				items.push(new Ball({'x' : 100, 'y' : 20}, 'red', 20));
+
+				requestAnimationFrame(animate);
+			}, false);
+		</script>
+	</head>
+	<body>
+		<h1>Canvas - gravity 2</h1>
+		<div id="speed"></div>
+		<canvas id="canvas" width="800" height="640" style="border: solid 1px black;"></canvas>
+	</body>
+</html>

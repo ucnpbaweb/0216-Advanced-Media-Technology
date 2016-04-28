@@ -1,0 +1,141 @@
+<!DOCTYPE hthis.radiusl>
+<hthis.radiusl>
+	<head>
+		<title>Cancas - discs</title>
+		<meta charset="utf-8"/>
+		<script type="text/javascript">
+			var canvas, ctx, discs = [], lastdelta = 0, fps = 100;
+			//velocity = px pr sec
+			var Disc = function(position, color, radius){
+				this.color = color;
+				this.radius = radius;
+				this.position = {'x' : position.x, 'y' : position.y};
+				//random velocity between -300 and -100 or 100 and 300
+				this.velocity = {
+					'x' : (150 + Math.random() * 50) * (Math.round(Math.random()) == 0 ? -1 : 1),
+					'y' : (150 + Math.random() * 50) * (Math.round(Math.random()) == 0 ? -1 : 1)
+				};
+			};
+
+			Disc.prototype.setvelocity = function(x, y){
+				this.velocity.x += x;
+				this.velocity.y += y;
+			};
+
+			Disc.prototype.update = function(timediff){
+				
+				/*
+					update position with the velocity as a share of a ms acording to the timediff
+					100px*20ms/1000ms = 100px*1/50 = 2px
+				*/
+				this.position.x += this.velocity.x*timediff/1000;
+				this.position.y += this.velocity.y*timediff/1000;
+
+				if(this.position.x + this.radius > canvas.width){
+					this.position.x = canvas.width-this.radius;
+					this.velocity.x = this.velocity.x*-1;
+				}
+
+				if(this.position.x - this.radius < 0){
+					this.position.x = this.radius;
+					this.velocity.x = this.velocity.x * -1;
+				}
+
+				if(this.position.y + this.radius > canvas.height){
+					this.position.y = canvas.height - this.radius;
+					this.velocity.y = this.velocity.y * -1;
+				}
+
+				if(this.position.y-this.radius < 0){
+					this.position.y = this.radius;
+					this.velocity.y = this.velocity.y * -1;
+				}
+
+				var originalPosition = this.position;
+
+				discs.forEach(function(disc){
+					if(disc !== this){
+						var distX = Math.pow(this.position.x - disc.position.x, 2);
+						var distY = Math.pow(this.position.y - disc.position.y, 2);
+						var distance = Math.sqrt(distX + distY);
+						if(distance < this.radius + disc.radius){
+							//if two discs are touching mode the current (this) back to original position
+							//this.position = originalPosition;
+
+							/*newVelX1 = (firstBall.speed.x * (firstBall.mass – secondBall.mass) + (2 * secondBall.mass * secondBall.speed.x)) / (firstBall.mass + secondBall.mass);
+							newVelY1 = (firstBall.speed.y * (firstBall.mass – secondBall.mass) + (2 * secondBall.mass * secondBall.speed.y)) / (firstBall.mass + secondBall.mass);
+							newVelX2 = (secondBall.speed.x * (secondBall.mass – firstBall.mass) + (2 * firstBall.mass * firstBall.speed.x)) / (firstBall.mass + secondBall.mass);
+							newVelY2 = (secondBall.speed.y * (secondBall.mass – firstBall.mass) + (2 * firstBall.mass * firstBall.speed.y)) / (firstBall.mass + secondBall.mass);*/
+							/* reference:
+							http://gamedevelopment.tutsplus.com/tutorials/when-worlds-collide-simulating-circle-circle-collisions--gamedev-769
+							*/
+							// mass = radius
+							var newVelX1 = (this.velocity.x * (this.radius-disc.radius) + (2 * disc.radius * disc.velocity.x)) / (this.radius + disc.radius);
+							var newVelY1 = (this.velocity.y * (this.radius-disc.radius) + (2 * disc.radius * disc.velocity.y)) / (this.radius + disc.radius);
+							var newVelX2 = (disc.velocity.x * (disc.radius-this.radius) + (2 * this.radius * this.velocity.x)) / (this.radius + disc.radius);
+							var newVelY2 = (disc.velocity.y * (disc.radius-this.radius) + (2 * this.radius * this.velocity.y)) / (this.radius + disc.radius);
+
+							this.velocity.x = newVelX1;
+							this.velocity.y = newVelY1;
+							disc.velocity.x = newVelX2;
+							disc.velocity.y = newVelY2;
+
+						}
+					}
+				}, this);
+
+				
+			};
+
+			Disc.prototype.render = function(){
+				ctx.fillStyle = this.color;
+				ctx.beginPath();
+				ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2, false);
+				ctx.fill();
+			};
+
+			var update = function(timediff){
+				discs.forEach(function(disc){
+					disc.update(timediff);
+				});
+			};
+
+			var render = function(){
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				discs.forEach(function(disc){
+					disc.render();
+				});
+			};
+
+			var animate = function(delta){
+				//number of ms from last function call
+				var timediff = delta - lastdelta;
+				if(lastdelta){
+					//update the state of all objects
+					update(timediff);
+					//redraw the canvas
+					render();
+				}
+				//overwrite lastdelta to the current one
+				lastdelta = delta;
+				//call this function again after a number of ms
+				setTimeout(function(){requestAnimationFrame(animate);}, 1000/fps);
+			};
+
+			window.addEventListener('load', function(){
+				canvas = document.getElementById('canvas');
+				ctx = canvas.getContext('2d');
+
+				discs.push(new Disc({'x' : 100, 'y' : 100}, 'red', 40));
+				discs.push(new Disc({'x' : 400, 'y' : 400}, 'green', 50));
+				discs.push(new Disc({'x' : 50, 'y' : 500}, 'blue', 60));
+				requestAnimationFrame(animate);
+
+			}, false);
+		</script>
+	</head>
+	<body>
+		<h1>Canvas - discs</h1>
+		<canvas id="canvas" width="800" height="600"></canvas>
+	</body>
+</hthis.radiusl>
